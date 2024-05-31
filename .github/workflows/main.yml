@@ -18,12 +18,11 @@ jobs:
       with:
         ssh-private-key: ${{ secrets.PERANGASSH }}
 
+    - name: Add server to known_hosts
+      run: ssh-keyscan 52.221.232.240 >> ~/.ssh/known_hosts
+
     - name: Copy files via SCP
-      env:
-        SERVER_IP: 52.221.232.240  # Server IP address
-      run: scp -r ./* ubuntu@$SERVER_IP:/www/wwwroot/eranga.run.place
+      run: scp -r ./* root@52.221.232.240:/www/wwwroot/eranga.run.place
 
     - name: Verify deployment
-      env:
-        SERVER_IP: 52.221.232.240
-      run: ssh ubuntu@$SERVER_IP 'ls -l /www/wwwroot/eranga.run.place'
+      run: ssh root@52.221.232.240 'ls -l /www/wwwroot/eranga.run.place'
