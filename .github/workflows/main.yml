@@ -1,0 +1,29 @@
+name: Deploy Website via SSH
+
+on:
+  push:
+    branches:
+      - main  # Triggers the workflow on push to the main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up SSH
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.erangaSSH }}
+
+    - name: Copy files via SCP
+      env:
+        SERVER_IP: 52.221.232.240  # Server IP address
+      run: scp -r ./* root@$SERVER_IP:/www/wwwroot/eranga.run.place
+
+    - name: Verify deployment
+      env:
+        SERVER_IP: 52.221.232.240
+      run: ssh root@$SERVER_IP 'ls -l /www/wwwroot/eranga.run.place'
